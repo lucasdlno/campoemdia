@@ -17,19 +17,21 @@ function diaMes(data) {
   return d.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' });
 }
 
-export default function Clima() {
+export default function Clima({ cidade }) {
   const [clima, setClima] = useState(null);
   const [erro, setErro] = useState('');
 
   useEffect(() => {
-    getClima().then(setClima).catch((e) => setErro(e.message));
-  }, []);
+    setClima(null);
+    setErro('');
+    getClima(cidade).then(setClima).catch((e) => setErro(e.message));
+  }, [cidade]);
 
   const secos = clima ? clima.dias.filter((d) => d.chuva < 2).length : 0;
 
   return (
     <aside className="card clima" aria-label="Previsão do tempo">
-      <h2>Tempo em Sorocaba</h2>
+      <h2>Tempo em {cidade}</h2>
       {erro && <p className="erro-texto">{erro}</p>}
       {!clima && !erro && <p className="mudo">Carregando previsão…</p>}
       {clima && (

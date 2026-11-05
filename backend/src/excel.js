@@ -45,6 +45,11 @@ function lerAba(wb, nome) {
   return linhas;
 }
 
+const numero = (v) => {
+  const n = Number(String(v).replace(',', '.'));
+  return v === '' || Number.isNaN(n) ? null : n;
+};
+
 const mapearLei = (l) => ({
   esfera: l['Esfera'],
   norma: l['Norma'],
@@ -54,6 +59,8 @@ const mapearLei = (l) => ({
   categoria: l['Categoria'],
   orgao: l['Órgão / Responsável'],
   verificacao: l['Verificação'],
+  cidade: l['Cidade'] || 'Todas',
+  atualizadoEm: l['Atualizado no sistema em'] || '',
 });
 
 let cache = null;
@@ -80,15 +87,32 @@ export async function getDados() {
         }),
       }));
 
-    const regras = lerAba(wb, 'Regras');
+    const cidades = lerAba(wb, 'Cidades').map((c) => ({
+      nome: c.nome,
+      lat: numero(c.lat),
+      lon: numero(c.lon),
+      moduloFiscalHa: numero(c.modulo_fiscal_ha),
+      obs: c.obs,
+    }));
 
+    const regras = lerAba(wb, 'Regras');
+    const regrasTamanho = lerAba(wb, 'Regras Tamanho');
+
+    const todasMunicipais = lerAba(wb, 'Leis Municipais').map(mapearLei);
     const leis = {
-      municipal: lerAba(wb, 'Leis Municipais').map(mapearLei),
+      municipal: todasMunicipais,
       estadual: lerAba(wb, 'Estaduais SP').map(mapearLei),
       federal: lerAba(wb, 'Federais').map(mapearLei),
     };
 
-    cache = { perguntas, regras, leis };
+    cache = {
+      perguntas,
+      cidades,
+      regras,
+      regrasTamanho,
+      leis,
+      atualizadoEm: new Date(mtimeMs).toISOString(),
+    };
     ultimaAlteracao = mtimeMs;
     return cache;
   } catch (erro) {

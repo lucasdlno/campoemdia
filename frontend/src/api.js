@@ -11,12 +11,15 @@ async function pedir(url, opcoes) {
   return dados;
 }
 
+const q = encodeURIComponent;
+
+export const getCidades = () => pedir('/api/cidades');
 export const getPerguntas = () => pedir('/api/perguntas');
-export const getLeis = () => pedir('/api/leis');
-export const getClima = () => pedir('/api/clima');
-export const avaliar = (respostas) =>
+export const getLeis = (cidade = 'todas') => pedir(`/api/leis?cidade=${q(cidade)}`);
+export const getClima = (cidade) => pedir(`/api/clima?cidade=${q(cidade)}`);
+export const avaliar = (payload) =>
   pedir('/api/avaliar', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ respostas }),
+    body: JSON.stringify(payload),
   });

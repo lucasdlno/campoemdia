@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { getPerguntas, avaliar } from '../api.js';
 
-export default function Questionario({ onConcluir, onCancelar }) {
+export default function Questionario({ cidade, onConcluir, onCancelar }) {
   const [perguntas, setPerguntas] = useState(null);
   const [erro, setErro] = useState('');
   const [indice, setIndice] = useState(0);
@@ -40,8 +40,8 @@ export default function Questionario({ onConcluir, onCancelar }) {
     setEnviando(true);
     setErro('');
     try {
-      const resultado = await avaliar(respostas);
-      onConcluir({ respostas, perguntas, resultado });
+      const resultado = await avaliar({ cidade, respostas });
+      onConcluir({ respostas, perguntas, resultado, cidade });
     } catch (e) {
       setErro(e.message);
       setEnviando(false);
@@ -56,7 +56,7 @@ export default function Questionario({ onConcluir, onCancelar }) {
   return (
     <section className="card questionario" aria-live="polite">
       <div className="progresso-topo">
-        <span>Pergunta {indice + 1} de {perguntas.length}</span>
+        <span>Pergunta {indice + 1} de {perguntas.length} · {cidade}</span>
         <span>{porcento}%</span>
       </div>
       <div className="barra" role="progressbar" aria-valuenow={porcento} aria-valuemin="0" aria-valuemax="100">

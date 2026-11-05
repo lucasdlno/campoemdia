@@ -38,7 +38,7 @@ button { font: inherit; cursor: pointer; }
 .topo { background: #fff; border-bottom: 1px solid var(--borda); position: sticky; top: 0; z-index: 5; }
 .topo-in { max-width: 1040px; margin: 0 auto; padding: 10px 20px; display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
 .logo { font-weight: 800; font-size: 1.3rem; color: var(--verde-escuro); }
-.topo nav { display: flex; gap: 6px; }
+.topo nav { display: flex; gap: 6px; flex-wrap: wrap; }
 .topo nav button { background: none; border: 0; padding: 8px 14px; border-radius: 999px; color: var(--mudo); font-weight: 600; }
 .topo nav button:hover { background: var(--verde-claro); }
 .topo nav button.ativo { background: var(--verde-claro); color: var(--verde-escuro); }
@@ -137,6 +137,48 @@ button:focus-visible, input:focus-visible, summary:focus-visible { outline: 3px 
 .abas button.ativo { background: var(--verde); border-color: var(--verde); color: #fff; }
 .busca { width: 100%; padding: 12px 16px; font: inherit; border: 2px solid var(--borda); border-radius: 12px; margin-bottom: 16px; }
 
+
+/* Cidade no topo */
+.cidade-sel { display: flex; align-items: center; gap: 8px; font-size: .9rem; color: var(--mudo); font-weight: 600; }
+select, .campo input { font: inherit; padding: 9px 12px; border: 2px solid var(--borda); border-radius: 10px; background: #fff; color: var(--texto); max-width: 100%; }
+.campo input:disabled { background: #f0f4f1; color: var(--mudo); }
+
+/* Leis */
+.atualizacao { background: var(--verde-claro); border-radius: 10px; padding: 8px 14px; display: inline-block; font-size: .92rem; }
+.opcao-simples { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; font-size: .95rem; }
+.opcao-simples input { width: 18px; height: 18px; }
+.datas { display: flex; gap: 8px 20px; flex-wrap: wrap; font-size: .85rem; color: var(--mudo); margin: 8px 0 0; padding-top: 8px; border-top: 1px dashed var(--borda); }
+.datas strong { color: var(--texto); }
+
+/* Terrenos */
+.acoes + .medidas, .espaco-topo { margin-top: 14px; }
+.grade-terrenos { list-style: none; padding: 0; margin: 14px 0 0; display: grid; gap: 14px; }
+@media (min-width: 700px) { .grade-terrenos { grid-template-columns: repeat(2, 1fr); } }
+.cartao-terreno { width: 100%; text-align: left; font: inherit; color: inherit; cursor: pointer; display: block; }
+.cartao-terreno:hover { border-color: var(--verde); }
+.vazio { text-align: center; margin-top: 16px; }
+.link-voltar { background: none; border: 0; color: var(--azul); font-weight: 700; padding: 0 0 12px; }
+.medidas { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 10px; margin: 14px 0; }
+.medidas div { background: var(--ceu); border-radius: 12px; padding: 10px 12px; }
+.medidas span { display: block; font-size: .8rem; color: var(--mudo); }
+.medidas strong { font-size: 1.15rem; color: var(--verde-escuro); }
+.info-tamanho h3 { font-size: 1.05rem; }
+.detalhe-terreno > * + * { margin-top: 14px; }
+.perigo { color: var(--erro) !important; border-color: #efc6c3 !important; }
+.caixa-dica { background: var(--amarelo); border: 1px solid var(--amarelo-borda); border-radius: 10px; padding: 10px 14px; margin: 14px 0 0; font-size: .95rem; }
+
+/* Formulário e mapa */
+.form-terreno h3 { margin-top: 22px; color: var(--verde-escuro); }
+.campos { display: grid; gap: 12px; margin: 12px 0; }
+@media (min-width: 700px) { .campos { grid-template-columns: 1fr 1fr; } }
+.campo { display: grid; gap: 4px; font-size: .92rem; font-weight: 600; }
+.campo span { color: var(--mudo); }
+.campo input, .campo select { width: 100%; }
+.mapa { height: 380px; border-radius: 14px; overflow: hidden; border: 2px solid var(--borda); z-index: 0; }
+.barra-mapa { display: flex; gap: 8px; flex-wrap: wrap; margin: 10px 0; }
+.botao.pequeno { padding: 8px 14px; font-size: .9rem; }
+.vertice { background: #fff; border: 3px solid var(--verde); border-radius: 50%; box-shadow: 0 0 0 2px rgba(0,0,0,.25); cursor: grab; }
+
 /* Rodapé */
 .rodape { max-width: 1040px; margin: 0 auto; padding: 0 20px 32px; color: var(--mudo); font-size: .88rem; }
 
@@ -149,7 +191,7 @@ button:focus-visible, input:focus-visible, summary:focus-visible { outline: 3px 
 /* Impressão: só a lista de documentos */
 @media print {
   body { background: #fff; font-size: 12pt; }
-  .topo, .acoes, .rodape, .clima, .check, .respostas, .nao-necessarios { display: none !important; }
+  .topo, .acoes, .rodape, .clima, .check, .respostas, .nao-necessarios, .link-voltar, .barra-mapa, .leaflet-control-container, .caixa-dica { display: none !important; }
   .card { box-shadow: none; break-inside: avoid; }
   .doc.feito h3 { text-decoration: none; }
 }

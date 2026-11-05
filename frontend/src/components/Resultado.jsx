@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import Documento from './Documento.jsx';
 
 const CHAVE = 'campoemdia:marcados';
 
@@ -10,53 +11,28 @@ function lerMarcados() {
   }
 }
 
-function Documento({ item, marcado, onMarcar, aplica }) {
-  const confirmar = item.verificacao === 'Sugestão do grupo';
-  return (
-    <li className={`doc card${marcado ? ' feito' : ''}${aplica ? '' : ' nao'}`}>
-      {aplica && (
-        <label className="check">
-          <input type="checkbox" checked={!!marcado} onChange={() => onMarcar(item.id)} />
-          <span className="caixa" aria-hidden="true" />
-          <span className="sr">Já tenho: {item.documento}</span>
-        </label>
-      )}
-      <div className="doc-corpo">
-        <div className="doc-topo">
-          <h3>{item.documento}</h3>
-          <span className={`selo-esfera ${item.esfera.toLowerCase()}`}>{item.esfera}</span>
-        </div>
-        <p className="motivo">{item.motivo}</p>
-        <p className="detalhe"><strong>O que é:</strong> {item.descricao}</p>
-        <p className="detalhe"><strong>Onde:</strong> {item.orgao}</p>
-        <p className="detalhe"><strong>Base legal:</strong> {item.baseLegal}</p>
-        {aplica && confirmar && (
-          <p className="alerta-doc">Confirme este item com o órgão responsável.</p>
-        )}
-      </div>
-    </li>
-  );
-}
-
-export default function Resultado({ respostas, perguntas, resultado, onRefazer }) {
+export default function Resultado({ respostas, perguntas, resultado, cidade, onRefazer, onSalvarTerreno }) {
   const { necessarios, naoNecessarios } = resultado;
   const [marcados, setMarcados] = useState(lerMarcados);
   const [copiado, setCopiado] = useState(false);
 
   useEffect(() => {
-    localStorage.setItem(CHAVE, JSON.stringify(marcados));
+    try {
+      localStorage.setItem(CHAVE, JSON.stringify(marcados));
+    } catch {
+      /* ignora */
+    }
   }, [marcados]);
 
   const feitos = necessarios.filter((d) => marcados[d.id]).length;
   const porcento = necessarios.length ? Math.round((feitos / necessarios.length) * 100) : 0;
-
   const alternar = (id) => setMarcados((m) => ({ ...m, [id]: !m[id] }));
 
   async function copiar() {
     const linhas = necessarios.map(
       (d) => `${marcados[d.id] ? '[x]' : '[ ]'} ${d.documento} (${d.esfera} – ${d.orgao})`,
     );
-    const textoLista = `Documentos necessários – CampoEmDia\n\n${linhas.join('\n')}`;
+    const textoLista = `Documentos necessários em ${cidade} – CampoEmDia\n\n${linhas.join('\n')}`;
     try {
       await navigator.clipboard.writeText(textoLista);
       setCopiado(true);
@@ -70,11 +46,9 @@ export default function Resultado({ respostas, perguntas, resultado, onRefazer }
     <section className="resultado">
       <div className="card resumo">
         <h2>
-          Você precisa de {necessarios.length} documento{necessarios.length === 1 ? '' : 's'}
+          Em {cidade}, você precisa de {necessarios.length} documento{necessarios.length === 1 ? '' : 's'}
         </h2>
-        <p>
-          Marque os que você já tem. Seu progresso fica salvo neste navegador.
-        </p>
+        <p>Marque os que você já tem. Seu progresso fica salvo neste navegador.</p>
         <div className="progresso-topo">
           <span>{feitos} de {necessarios.length} prontos</span>
           <span>{porcento}%</span>
@@ -95,8 +69,16 @@ export default function Resultado({ respostas, perguntas, resultado, onRefazer }
           </ul>
         </details>
 
+        <div className="caixa-dica">
+          Quer ver regras que mudam com o tamanho da área e acompanhar vários terrenos?
+          Salve estas respostas como um terreno.
+        </div>
+
         <div className="acoes">
-          <button className="botao" onClick={() => window.print()}>Imprimir / salvar PDF</button>
+          <button className="botao" onClick={() => onSalvarTerreno({ respostas, cidade })}>
+            Salvar como terreno
+          </button>
+          <button className="botao claro" onClick={() => window.print()}>Imprimir / PDF</button>
           <button className="botao claro" onClick={copiar}>{copiado ? 'Copiado!' : 'Copiar lista'}</button>
           <button className="botao claro" onClick={onRefazer}>Refazer</button>
         </div>
