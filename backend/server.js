@@ -1,5 +1,7 @@
 import express from 'express';
 import cors from 'cors';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { getDados } from './src/excel.js';
 import { avaliar } from './src/avaliar.js';
 
@@ -96,6 +98,10 @@ app.get('/api/clima', rota(async (req, res) => {
     res.status(502).json({ erro: 'Não foi possível obter a previsão do tempo agora.' });
   }
 }));
+
+// Entrega o site (front-end já compilado) pela mesma porta da API
+const pastaAtual = path.dirname(fileURLToPath(import.meta.url));
+app.use(express.static(path.resolve(pastaAtual, '../frontend/dist')));
 
 const PORTA = process.env.PORT || 3000;
 app.listen(PORTA, () => {
